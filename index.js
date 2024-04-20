@@ -1,56 +1,94 @@
+// Array containing the selections: Rock, Paper, Scissors
 const selections = ["Rock", "Paper", "Scissors"];
-const computerChoice = selections[Math.floor(Math.random() * selections.length)];
 
-function getComputerChoice() {
-    return computerChoice;
-}
-
+// Initialize player and computer scores
 let playerScore = 0;
 let computerScore = 0;
 
-function playRound() {
-    let computerSelection = getComputerChoice().toUpperCase();
-    console.log("Best of 5 wins!");
+// Get the results div element from the HTML
+let resultsDiv = document.getElementById("results");
 
-    let playerSelection = prompt("Choose your fighter! Rock, Paper or Scissors?").toUpperCase();
-    console.log("Player selects: " + playerSelection);
-
-    if (playerSelection == computerSelection) {
-        console.log("It's a tie!");
-    } else if (playerSelection == "ROCK" && computerSelection == "SCISSORS") {
-        console.log("You win! Rock beats scissors");
-        playerScore++;
-    } else if (playerSelection == "ROCK" && computerSelection == "PAPER") {
-        console.log("You lose :( Paper beats rock");
-        computerScore++;
-    } else if (playerSelection == "SCISSORS" && computerSelection == "PAPER") {
-        console.log("You win! Scissors beats paper");
-        playerScore++;
-    } else if (playerSelection == "SCISSORS" && computerSelection == "ROCK") {
-        console.log("You lose :( Rock beats scissors");
-        computerScore++;
-    } else if (playerSelection == "PAPER" && computerSelection == "ROCK") {
-        console.log("You win! Paper beats rock");
-        playerScore++;
-    } else if (playerSelection == "PAPER" && computerSelection == "SCISSORS") {
-        console.log("You lose :( Scissors beats paper");
-        computerScore++;
-    }
-    console.log("Player: " + playerScore);
-    console.log("Computer: " + computerScore);
+// Function to get the computer's choice (randomly)
+function getComputerChoice() {
+    return selections[Math.floor(Math.random() * selections.length)].toUpperCase();
 }
 
+// Function to play a round
+function playRound(playerSelection) {
+    // Get computer's selection
+    let computerSelection = getComputerChoice();
+    
+    // Clear the results div
+    resultsDiv.innerHTML = "";
+    
+    // Check the outcome of the round and update scores accordingly
+    if (playerSelection === computerSelection) {
+        resultsDiv.innerHTML += "It's a tie this round!<br><br>";
+    } else if (
+        (playerSelection === "ROCK" && computerSelection === "SCISSORS") ||
+        (playerSelection === "SCISSORS" && computerSelection === "PAPER") ||
+        (playerSelection === "PAPER" && computerSelection === "ROCK")
+    ) {
+        resultsDiv.innerHTML += "You win this round!<br><br>";
+        playerScore++;
+    } else {
+        resultsDiv.innerHTML += "You lose this round :(<br><br>";
+        computerScore++;
+    }
+    
+    // Update scores and check if game ended
+    score();
+    endGame();
+}
+
+// Function to display player and computer scores
+function score() {
+    resultsDiv.innerHTML += "Player: " + playerScore + "<br><br>";
+    resultsDiv.innerHTML += "Computer: " + computerScore + "<br><br>";
+}
+
+// Function to check if the game has ended
+function endGame() {
+    if (playerScore >= 5 || computerScore >= 5) {
+        // Display the game result
+        if (playerScore > computerScore) {
+            resultsDiv.innerHTML += "You have beaten your computer!<br><br>";
+        } else if (computerScore > playerScore) {
+            resultsDiv.innerHTML += "You have lost against your computer!<br><br>";
+        } else {
+            resultsDiv.innerHTML += "The game ended in a tie!<br><br>";
+        }
+        // Reset scores for the next game
+        playerScore = 0;
+        computerScore = 0;
+    }
+}
+
+// Function to display the message indicating the start of a best-of-5 game
+function bestOf5() {
+    resultsDiv.innerHTML = "Best of 5 wins!<br><br>";
+}
+
+// Function to attach event listeners to the buttons (rock, paper, scissors)
+function attachEventListeners() {
+    document.getElementById("rock").addEventListener("click", () => {
+        playRound("ROCK");
+    });
+
+    document.getElementById("paper").addEventListener("click", () => {
+        playRound("PAPER");
+    });
+
+    document.getElementById("scissors").addEventListener("click", () => {
+        playRound("SCISSORS");
+    });
+}
+
+// Function to start the game
 function playGame() {
-    for (let i = 0; i < 5; i++) {
-        playRound();
-    }
-    if (playerScore > computerScore) {
-        console.log("You have beat your computer!");
-    } else if (computerScore > playerScore) {
-        console.log("You have lost against your computer!");
-    } else if (playerScore == computerScore) {
-        console.log("The game ended in a tie!");
-    }
+    bestOf5();
+    attachEventListeners();
 }
 
+// Call the playGame function to start the game
 playGame();
